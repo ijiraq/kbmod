@@ -177,7 +177,7 @@ class run_search:
             'clip_negative':False, 'sigmaG_filter_type':'lh',
             'cluster_type':'all', 'cluster_function':'DBSCAN',
             'chunk_start_index': 0, 'chunks_to_consider': 1000,
-            'custom_bit_mask': None,
+            'custom_bit_mask': None, 'custom_flag_keys': None,
             }
         # Make sure input_parameters contains valid input options
         for key, val in input_parameters.items():
@@ -284,10 +284,11 @@ class run_search:
         # Save values in image_params for later use
         if self.config['do_mask']:
             bit_mask = self.config['custom_bit_mask'] if self.config['custom_bit_mask'] is not None else image_params['bit_mask']
+            flag_keys = self.config['custom_flag_keys'] if self.config['custom_flag_keys'] is not None else image_params['flag_keys']
             stack = kb_post_process.apply_mask(
                 stack, mask_num_images=self.config['mask_num_images'],
                 mask_threshold=self.config['mask_threshold'],
-                bit_mask = bit_mask)
+                bit_mask = bit_mask, flag_keys = flag_keys)
         psf = kb.psf(self.config['psf_val'])
         #help(psf)
         print('\n The adopted PSF:')

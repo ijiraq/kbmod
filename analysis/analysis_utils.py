@@ -162,6 +162,7 @@ class Interface(SharedTools):
             'NOT_BLENDED': -32768, 'UNMASKEDNAN': -32768, 'BRIGHT_OBJECT': -32768,
             'CLIPPED': -32768, 'INEXACT_PSF': -32768, 'REJECTED': -32768,
             'SENSOR_EDGE': -32768, 'CR': -32768}
+        default_flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED']
         for k in list(default_bit_mask.keys()):
             hkey = f'MP_{k}'
             if hkey in mask_header:
@@ -170,6 +171,7 @@ class Interface(SharedTools):
                 missing_bit_mask_keywords.append(k)
         image_params['missing_bit_mask_keywords'] = missing_bit_mask_keywords
         image_params['bit_mask'] = default_bit_mask
+        image_params['flag_keys'] = default_flag_keys
 
         image_params['ec_angle'] = self._calc_ecliptic_angle(wcs)
         del(hdulist)
@@ -314,7 +316,7 @@ class PostProcess(SharedTools):
         return
 
     def apply_mask(self, stack, mask_num_images=2, mask_threshold=120.,
-                   bit_mask = None):
+                   bit_mask = None, flag_keys = None):
         """
         This function applys a mask to the images in a KBMOD stack. This mask
         sets a high variance for masked pixels
@@ -372,6 +374,12 @@ class PostProcess(SharedTools):
             print('Using hard coded bit_mask mask_bits_dict_HSC\n')
             mask_bits_dict = mask_bits_dict_HSC
 
+        if type(flag_keys) == type([]):
+            print('Using user supplied flag_keys dict.\n')
+        elif flag_keys is None: # not sure this condition will ever occur...
+            print("Using hardcoded flag_keys 'EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED'\n")
+            flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED']
+
         vals, keys = list(mask_bits_dict.values()), list(mask_bits_dict.keys())
         for l in range(len(vals)):
             print('  ',keys[l],':',vals[l])
@@ -381,7 +389,7 @@ class PostProcess(SharedTools):
         #master_flag_keys = ['DETECTED','REJECTED']
 
         # Mask the following pixels: Fraser HSC
-        flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED']#, 'BRIGHT_OBJECT']
+        #flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED']#, 'BRIGHT_OBJECT']
 
 
         # for FOSSIL

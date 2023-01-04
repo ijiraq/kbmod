@@ -122,6 +122,7 @@ input_parameters = {
                 'NOT_BLENDED': 10, 'UNMASKEDNAN': 11, 'BRIGHT_OBJECT': 12,
                 'CLIPPED': 13, 'INEXACT_PSF': 14, 'REJECTED': 15,
                 'SENSOR_EDGE': 16},
+            'custom_flag_keys': ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED'],
             'im_filepath':im_filepath,
             'res_filepath':res_filepath,
             'time_file':time_file,
