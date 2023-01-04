@@ -386,8 +386,6 @@ class PostProcess(SharedTools):
 
         # for FOSSIL
         #flag_keys = ['EDGE', 'NO_DATA', 'SAT']
-        #master_flag_keys = [] #['DETECTED']  for fossil, [] for NH
-
         # for CLASSY ISIS
         #flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'BAD', 'NO_DATA', 'INTRP', 'BRIGHT_OBJECT']
 
