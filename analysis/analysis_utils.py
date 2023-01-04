@@ -155,20 +155,23 @@ class Interface(SharedTools):
 
         ### get the bit mask directly from the header and store in image_params
         mask_header = hdulist[2].header
-        missing_bit_mask_keywords = []
-        default_bit_mask = {
-            'BAD': -32768, 'SAT': -32768, 'INTRP': -32768, 'EDGE': -32768, 'DETECTED': -32768,
-            'DETECTED_NEGATIVE': -32768, 'SUSPECT': -32768, 'NO_DATA': -32768, 'CROSSTALK': -32768,
-            'NOT_BLENDED': -32768, 'UNMASKEDNAN': -32768, 'BRIGHT_OBJECT': -32768,
-            'CLIPPED': -32768, 'INEXACT_PSF': -32768, 'REJECTED': -32768,
-            'SENSOR_EDGE': -32768, 'CR': -32768}
+        default_bit_mask = {}
+        # get a list of possible bit mask keywords
+        # header keywords are all proceeded by 'MP_' so grab that list of keywords
+        for keyword in mask_header['MP_*']:
+            flag = keyword.replace("MP_","")
+            default_bit_mask[flag] = mask_header[keyword]
+        # set a default list of keywords to flag
         default_flag_keys = ['EDGE', 'NO_DATA', 'SAT', 'INTRP', 'REJECTED']
         for k in list(default_bit_mask.keys()):
-            hkey = f'MP_{k}'
-            if hkey in mask_header:
-                default_bit_mask[k] = mask_header[hkey]
-            else:
+            default_bit_mask[k] = mask_header[f"MP_{k}"]
+
+        # setup array for default_flag_keys that might be missing from header
+        missing_bit_mask_keywords = []
+        for k in default_flag_keys:
+            if k not in default_bit_mask:
                 missing_bit_mask_keywords.append(k)
+
         image_params['missing_bit_mask_keywords'] = missing_bit_mask_keywords
         image_params['bit_mask'] = default_bit_mask
         image_params['flag_keys'] = default_flag_keys
